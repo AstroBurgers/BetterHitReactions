@@ -1,0 +1,18 @@
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.AssemblyReference.cache
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.CoreCompileInputs.cache
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\bin\Debug\StiffDeath.dll
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\bin\Debug\StiffDeath.pdb
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\bin\Debug\DamageTrackerLib.dll
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\bin\Debug\DamageTrackingFramework.dll
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\bin\Debug\RagePluginHook.dll
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.CopyComplete
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\obj\Debug\StiffDeath.dll
+C:\Users\steve\Desktop\StiffDeath\StiffDeath\obj\Debug\StiffDeath.pdb
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\StiffDeath.dll
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\StiffDeath.pdb
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.AssemblyReference.cache
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.CoreCompileInputs.cache
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\StiffDeath.csproj.CopyComplete
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\StiffDeath.dll
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\StiffDeath.pdb
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\DamageTrackerLib.dll

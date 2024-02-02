@@ -1,0 +1,15 @@
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\BetterHitReactions.dll
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\BetterHitReactions.pdb
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\bin\Debug\DamageTrackerLib.dll
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.AssemblyReference.cache
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.CoreCompileInputs.cache
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.CopyComplete
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.dll
+C:\Users\steve\Desktop\Releases WIPS\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.pdb
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\bin\Debug\BetterHitReactions.dll
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\bin\Debug\BetterHitReactions.pdb
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.AssemblyReference.cache
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.CoreCompileInputs.cache
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.csproj.CopyComplete
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.dll
+C:\Users\steve\Desktop\Desktop Files\Coding\Projects\StiffDeath\StiffDeath\obj\Debug\BetterHitReactions.pdb
