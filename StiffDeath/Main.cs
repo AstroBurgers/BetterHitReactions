@@ -1,7 +1,5 @@
-﻿using System;
-using System.Security.Cryptography;
-using DamageTrackerLib;
-using Rage;
+﻿using System.Security.Cryptography;
+using BetterHitReactions.EuphoriaHandling;
 
 [assembly: Rage.Attributes.Plugin("Better Hit Reactions", Description = "BRUTALITY", Author = "Astro")]
 

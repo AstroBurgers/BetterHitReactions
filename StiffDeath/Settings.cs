@@ -1,6 +1,4 @@
-﻿using Rage;
-
-namespace BetterHitReactions;
+﻿namespace BetterHitReactions;
 
 internal static class Settings
 {
@@ -8,6 +6,8 @@ internal static class Settings
     private static InitializationFile _inifile; // Defining a new INI File
 
     internal static bool DoesPedDropWeapon = true;
+    internal static bool DoesEuphoriaEffectPlayer = true;
+    
     
     internal static void SetupIniFile()
     {
@@ -18,6 +18,8 @@ internal static class Settings
         Game.LogTrivial("Chance = " + Chance);
         DoesPedDropWeapon = _inifile.ReadBoolean("Settings", "Drop_Weapons", DoesPedDropWeapon);
         Game.LogTrivial("DoesPedDropWeapon = " + DoesPedDropWeapon);
+        DoesEuphoriaEffectPlayer = _inifile.ReadBoolean("Settings", "Effect_Player", DoesEuphoriaEffectPlayer);
+        Game.LogTrivial("DoesEuphoriaEffectPlayer: " + DoesEuphoriaEffectPlayer);
         
         ValidateIniFile();
     }

@@ -52,8 +52,9 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DamageHandler.cs" />
-    <Compile Include="EuphoriaHelper.cs" />
+    <Compile Include="EuphoriaHandling\DamageHandler.cs" />
+    <Compile Include="EuphoriaHandling\EuphoriaHelper.cs" />
+    <Compile Include="GlobalUsings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Stabbed.cs" />
     <Compile Include="Main.cs" />
