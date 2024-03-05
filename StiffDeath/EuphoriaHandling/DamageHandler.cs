@@ -9,14 +9,14 @@ internal class DamageHandler
         Game.LogTrivial("Initialized euphoria...");
         DamageTrackerService.OnPedTookDamage += OnPedTookDamage;
 
-        // TODO Fix this shit as well
+        // TODO Fix this shit
         // if (!Settings.DoesEuphoriaEffectPlayer) return;
         // Game.LogTrivial("Initializing player euphoria");
         // DamageTrackerService.OnPlayerTookDamage += OnPlayerTookDamage;
     }
 
     
-    // TODO Fix this shit
+    // TODO Fix this shit as well
     // private static void OnPlayerTookDamage(Ped victimped, Ped attackerped, PedDamageInfo damageInfo)
     // {
     //     try
@@ -101,7 +101,7 @@ internal class DamageHandler
             EuphoriaMessage msg = new EuphoriaMessage("NM_STOP_ALL_MSG", true);
             msg.SendTo(victimPed);
 
-            bool IsPedBeingTazed = false;
+            bool isPedBeingTazed = false;
 
             EuphoriaMessageShot euphoriaMessage = new EuphoriaMessageShot
             {
@@ -113,12 +113,12 @@ internal class DamageHandler
             switch (damageInfo.WeaponInfo.Group)
             {
                 case DamageGroup.LessThanLethal:
-                    IsPedBeingTazed = true;
+                    isPedBeingTazed = true;
                     GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed, euphoriaMessage));
                     break;
             }
 
-            if (!IsPedBeingTazed)
+            if (!isPedBeingTazed)
             {
                 MakePedRagdoll(victimPed, 4000, 5000);
             }
@@ -155,7 +155,7 @@ internal class DamageHandler
                     break;
             }
 
-            IsPedBeingTazed = false;
+            isPedBeingTazed = false;
         }
         catch (Exception e)
         {
