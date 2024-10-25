@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using BetterHitReactions.EuphoriaHandling;
 
 [assembly: Rage.Attributes.Plugin("Better Hit Reactions", Description = "BRUTALITY", Author = "Astro")]
@@ -37,4 +38,7 @@ public class EntryPoint
         
         return convertedChance;
     }
+    
+    internal static void Error(Exception ex, [CallerFilePath] string p = "", [CallerMemberName] string m = "", [CallerLineNumber] int l = 0) => 
+        Game.LogTrivial($"[ERROR] BetterHitReactions: An error occured at '{p} {m} line {l}' - {ex}");
 }

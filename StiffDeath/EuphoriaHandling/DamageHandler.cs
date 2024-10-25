@@ -159,7 +159,7 @@ internal class DamageHandler
         }
         catch (Exception e)
         {
-            Game.LogTrivial("BHR Threw an error:  " + e);
+            EntryPoint.Error(e);
         }
     }
 }
