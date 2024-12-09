@@ -6,7 +6,7 @@ internal class EuphoriaHelper
 {
     private static void MakePedDropWeapon(Ped ped)
     {
-        var dropWeapon = Settings.DoesPedDropWeapon && (int)EntryPoint.GenerateChance() <= Settings.Chance;
+        var dropWeapon = Settings.DoesPedDropWeapon && (int)GenerateChance() <= Settings.Chance;
         if (!dropWeapon || !ped.Exists() || !ped.IsAlive ||
             !NativeFunction.Natives.x475768A975D5AD17<bool>(ped, 1 | 2 | 4)) return; // IS_PED_ARMED
         Game.LogTrivial("Making ped drop weapon...");
@@ -59,7 +59,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
     }
 
@@ -128,7 +128,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
 
     }
@@ -228,7 +228,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
 
     }
@@ -266,7 +266,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
 
     }
@@ -305,7 +305,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
 
     }
@@ -364,7 +364,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
     }
 
@@ -372,10 +372,7 @@ internal class EuphoriaHelper
     {
         try
         {
-            if (euphoriaMessage is null)
-            {
-                euphoriaMessage = new EuphoriaMessageShot();
-            }
+            euphoriaMessage ??= new EuphoriaMessageShot();
 
             MakePedDropWeapon(ped);
             euphoriaMessage.ArmStiffness = 16f;
@@ -408,7 +405,7 @@ internal class EuphoriaHelper
         }
         catch (Exception e)
         {
-            Error(e);
+            // Error(e);
         }
     }
 }
