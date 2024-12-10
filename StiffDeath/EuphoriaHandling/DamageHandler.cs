@@ -97,25 +97,16 @@ internal class DamageHandler
             Game.LogTrivial($"Injured Ped: {victimPed.Model.Name}");
             Game.LogTrivial("Ped was shot in: " + damageInfo.BoneInfo.BodyRegion);
 
-            NativeFunction.Natives.SET_PED_CONFIG_FLAG(victimPed, 281, false);
-            EuphoriaMessage msg = new EuphoriaMessage("NM_STOP_ALL_MSG", true);
-            msg.SendTo(victimPed);
+            NativeFunction.Natives.SET_PED_CONFIG_FLAG(victimPed, 281, true);
 
             bool isPedBeingTazed = false;
+            
+            SendEuphoriaMessage(victimPed, reachForWound:true, timeBeforeReachForWound:0f);
 
-            EuphoriaMessageShot euphoriaMessage = new EuphoriaMessageShot
+            if (damageInfo.WeaponInfo.Group == DamageGroup.LessThanLethal)
             {
-                TimeBeforeReachForWound = 0f,
-                ReachForWound = true
-            };
-            euphoriaMessage.SendTo(victimPed);
-
-            switch (damageInfo.WeaponInfo.Group)
-            {
-                case DamageGroup.LessThanLethal:
-                    isPedBeingTazed = true;
-                    GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed, euphoriaMessage));
-                    break;
+                isPedBeingTazed = true;
+                GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed));
             }
 
             if (!isPedBeingTazed)
@@ -126,13 +117,13 @@ internal class DamageHandler
             switch (damageInfo.BoneInfo.BoneId)
             {
                 case (BoneId)PedBoneId.Head:
-                    GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Neck:
-                    GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Pelvis:
-                    GameFiber.StartNew(() => ApplyPelvisEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyPelvisEuphoria(victimPed));
                     break;
                 default:
                     Game.LogTrivial("Ped was not shot in a specific bone, checking body regions...");
@@ -142,13 +133,13 @@ internal class DamageHandler
             switch (damageInfo.BoneInfo.BodyRegion)
             {
                 case BodyRegion.Torso:
-                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
                     break;
                 case BodyRegion.Legs:
-                    GameFiber.StartNew(() => ApplyLegEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyLegEuphoria(victimPed));
                     break;
                 case BodyRegion.Arms:
-                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, euphoriaMessage));
+                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed));
                     break;
                 default:
                     Game.LogTrivial("Ped was not injured in a valid bodyregion");

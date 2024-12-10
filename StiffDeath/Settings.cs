@@ -11,7 +11,7 @@ internal static class Settings
     
     internal static void SetupIniFile()
     {
-        _inifile = new InitializationFile(@"plugins/BetterHitReactions.ini");
+        _inifile = new(@"plugins/BetterHitReactions.ini");
         _inifile.Create();
 
         Chance = _inifile.ReadInt32("Settings", "Chance", Chance);
