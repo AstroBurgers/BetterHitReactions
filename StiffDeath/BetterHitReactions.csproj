@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="EuphoriaHandling\DamageHandler.cs" />
     <Compile Include="EuphoriaHandling\EuphoriaHelper.cs" />
+    <Compile Include="EuphoriaHandling\EuphoriaMessages.cs" />
     <Compile Include="GlobalUsings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Stabbed.cs" />
