@@ -41,10 +41,10 @@
       <HintPath>..\packages\Costura.Fody.6.0.0\lib\netstandard2.0\Costura.dll</HintPath>
     </Reference>
     <Reference Include="DamageTrackerLib">
-      <HintPath>C:\Users\steve\Desktop\References\DamageTrackerLib.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\References\DamageTrackerLib.dll</HintPath>
     </Reference>
     <Reference Include="DamageTrackingFramework">
-      <HintPath>C:\Users\steve\Desktop\References\DamageTrackingFramework.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\References\DamageTrackingFramework.dll</HintPath>
     </Reference>
     <Reference Include="RagePluginHook">
       <HintPath>..\..\Projects\Refrences\RagePluginHook.dll</HintPath>
