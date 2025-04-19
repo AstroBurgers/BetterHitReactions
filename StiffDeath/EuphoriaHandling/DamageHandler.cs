@@ -9,21 +9,23 @@ internal class DamageHandler
     {
         Game.LogTrivial("Initialized euphoria...");
         DamageTrackerService.OnPedTookDamage += OnPedTookDamage;
-
-        // TODO Fix this shit
+        
          if (!Settings.DoesEuphoriaEffectPlayer) return;
          Game.LogTrivial("Initializing player euphoria");
          DamageTrackerService.OnPlayerTookDamage += OnPlayerTookDamage;
     }
 
     
-    // TODO Fix this shit as well
     private static void OnPlayerTookDamage(Ped victimPed, Ped attackerPed, PedDamageInfo damageInfo)
     {
         try
         {
-            Game.LogTrivial($"Injured Ped: {victimPed.Model.Name}");
-            Game.LogTrivial("Ped was shot in: " + damageInfo.BoneInfo.BodyRegion);
+            /*Game.DisplayHelp($"~w~Ped: {victimPed.Model.Name} (~r~{damageInfo.Damage} ~b~{damageInfo.ArmourDamage} ~w~Dmg ({(victimPed.IsAlive ? "~g~Alive" : "~r~Dead")}~w~) " +
+                             $"\n~w~Health: ~g~{victimPed.Health}/{victimPed.MaxHealth} Armor: ~b~{victimPed.Armor})" +
+                             $"\n~w~Attacker: ~r~{attackerPed?.Model.Name ?? "None"}" +
+                             $"\n~w~Weapon: ~y~{damageInfo.WeaponInfo.Hash.ToString()} {damageInfo.WeaponInfo.Type.ToString()} {damageInfo.WeaponInfo.Group.ToString()}" +
+                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");*/
+
 
             var chance = rndm.Next(1, 101);
             if (chance < 20 && victimPed.Armor == 0)
@@ -68,7 +70,7 @@ internal class DamageHandler
                     GameFiber.StartNew(() => ApplyLegEuphoria(victimPed));
                     break;
                 case BodyRegion.Arms:
-                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed));
+                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, damageInfo));
                     break;
                 default:
                     Game.LogTrivial("Ped was not injured in a valid bodyregion");
@@ -87,25 +89,41 @@ internal class DamageHandler
     {
         try
         {
-            Game.LogTrivial($"Injured Ped: {victimPed.Model.Name}");
-            Game.LogTrivial("Ped was shot in: " + damageInfo.BoneInfo.BodyRegion);
+            /*Game.DisplayHelp($"~w~Ped: {victimPed.Model.Name} (~r~{damageInfo.Damage} ~b~{damageInfo.ArmourDamage} ~w~Dmg ({(victimPed.IsAlive ? "~g~Alive" : "~r~Dead")}~w~) " +
+                             $"\n~w~Health: ~g~{victimPed.Health}/{victimPed.MaxHealth} Armor: ~b~{victimPed.Armor})" +
+                             $"\n~w~Attacker: ~r~{attackerPed?.Model.Name ?? "None"}" +
+                             $"\n~w~Weapon: ~y~{damageInfo.WeaponInfo.Hash.ToString()} {damageInfo.WeaponInfo.Type.ToString()} {damageInfo.WeaponInfo.Group.ToString()}" +
+                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");*/
 
             NativeFunction.Natives.SET_PED_CONFIG_FLAG(victimPed, 281, true);
-            victimPed.Velocity *= 0.1f;
-            
-            bool isPedBeingTazed = false;
-            
+
+            if (!victimPed.IsRunning)
+            {
+                switch (damageInfo.WeaponInfo.Type)
+                {
+                    case DamageType.SMG:
+                    case DamageType.Pistol:
+                        victimPed.Velocity *= 0.05f;
+                        break;
+                    case DamageType.Rifle:
+                        victimPed.Velocity *= 0.11f;
+                        break;
+                    case DamageType.Sniper:
+                    case DamageType.Shotgun:
+                        victimPed.Velocity *= 0.75f;
+                        break;
+                    case DamageType.MG:
+                        victimPed.Velocity *= 0.15f;
+                        break;
+                }
+            }
+
             //SendEuphoriaMessage(victimPed, reachForWound:true, timeBeforeReachForWound:0f);
             
             if (damageInfo.WeaponInfo.Group == DamageGroup.LessThanLethal)
             {
-                isPedBeingTazed = true;
                 GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed));
-            }
-
-            if (!isPedBeingTazed)
-            {
-                //MakePedRagdoll(victimPed, 4000, 5000, 2);
+                return;
             }
 
             switch (damageInfo.BoneInfo.BoneId)
@@ -116,6 +134,7 @@ internal class DamageHandler
                     GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Neck:
+                    victimPed.Health = 100;
                     GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Pelvis:
@@ -135,14 +154,12 @@ internal class DamageHandler
                     GameFiber.StartNew(() => ApplyLegEuphoria(victimPed));
                     break;
                 case BodyRegion.Arms:
-                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed));
+                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, damageInfo));
                     break;
                 default:
                     Game.LogTrivial("Ped was not injured in a valid bodyregion");
                     break;
             }
-
-            isPedBeingTazed = false;
         }
         catch (Exception e)
         {

@@ -1,4 +1,5 @@
 ﻿using static BetterHitReactions.EntryPoint;
+using static BetterHitReactions.RandomHelper;
 
 namespace BetterHitReactions.EuphoriaHandling;
 
@@ -12,7 +13,8 @@ internal class EuphoriaHelper
         Game.LogTrivial("Making ped drop weapon...");
         NativeFunction.Natives.x6B7513D9966FBEC0(ped); // SET_PED_DROPS_WEAPON
     }
-
+    internal static Random rndm = new Random();
+    
     internal static void MakePedRagdoll(Ped ped, int minTime, int maxTime, int ragdollType) {
         Vector3 dir = new Vector3(ped.Velocity.X,
             ped.Velocity.Y + (ped.Speed + 1.5f), ped.Velocity.Z);
@@ -77,6 +79,7 @@ internal class EuphoriaHelper
             //if (ped.IsDead) return; // If the ped is already dead, stop processing
 
             // Apply instant stiffness when the headshot occurs
+            var stiffness = GetRandomFloat(0.7f, 1.0f);
             EuphoriaMessageElectrocute euphoriaMessageElectrocute = new(true)
             {
                 LeftArm = false,
@@ -86,17 +89,17 @@ internal class EuphoriaHelper
                 Spine = false,
                 Neck = false,
                 ApplyStiffness = true,
-                StunMag = 1.0f // Maximum stiffness for the initial effect
+                StunMag = stiffness // Maximum stiffness for the initial effect
             };
-
+            
             // Apply stiffness immediately
             euphoriaMessageElectrocute.SendTo(ped);
 
             // Stiffening time - keep the ped in a stiffened state for a brief moment
-            GameFiber.Wait(500); // 0.5 seconds for the stiffening effect to kick in
+            GameFiber.Wait(450); // 0.45 seconds for the stiffening effect to kick in
 
             // Gradually reduce stiffness and start the slumping effect
-            float stiffnessReduction = 1.0f; // Start with max stiffness
+            var stiffnessReduction = stiffness; // Start with max stiffness
             for (int i = 0; i < 10; i++) // Loop to gradually reduce stiffness
             {
                 stiffnessReduction -= 0.1f; // Reduce stiffness by 10% each iteration
@@ -113,7 +116,7 @@ internal class EuphoriaHelper
                 ped.ApplyForce(force, velocity, false, true);
 
                 // Wait a little before applying the next stiffness reduction
-                GameFiber.Wait(500); // Adjust the wait time as necessary to control the slump speed
+                GameFiber.Wait(250); // Adjust the wait time as necessary to control the slump speed
 
                 // Check if the ped is dead after each iteration
                 if (ped.IsDead) break; // Stop if the ped has died during the reaction
@@ -151,37 +154,42 @@ internal class EuphoriaHelper
     {
         try
         {
-            // Make the ped stagger first to simulate the loss of balance
-            var velocity = ped.Velocity;
-            var force = velocity * 5f; // Moderate force to make them stumble
-        
-            // Apply force to simulate the stumble
-            ped.ApplyForce(force, velocity, false, true);
-
-            // Wait a brief moment for the stumble animation to take effect
-            GameFiber.Wait(200);
-
-            // Now apply the shot euphoria with the ReachForWound parameter to simulate the ped reaching for the neck
-            EuphoriaMessageShot shotMessage = new(true)
+            // 1. Trigger a staggered fall reaction to simulate stumbling
+            var staggerFall = new EuphoriaMessageStaggerFall(true)
             {
-                ReachForWound = true, // This makes the ped grab their neck wound
+                AlwaysBendForwards = true,
+                ArmDamping = 0.2f,
+                ArmDampingStart = 0.1f,
+                ArmStiffness = 0.3f,
+                ArmStiffnessStart = 0.4f,
+                HeadLookAtVelProb = 0.5f,
+                HeadLookPos = ped.Position + ped.ForwardVector * 2f,
+                HipBendMult = 0.4f,
+                Lean2multB = 0.3f
             };
 
-            shotMessage.SendTo(ped); // Send the message to trigger the reaction
-
-            // Optionally, apply more force for more staggering
-            ped.ApplyForce(force, velocity, false, true);
-
-            // Wait for a brief period to allow the reaction to play out
-            GameFiber.Wait(1500);
-            shotMessage.ReachForWound = false;
+            var shotMessage = new EuphoriaMessageShot(true)
+            {
+                ReachForWound = true,
+                DeathTime = 2500,
+                TimeBeforeReachForWound = 0f
+            };
+            
+            staggerFall.SendTo(ped);
+            GameFiber.Wait(200);
             shotMessage.SendTo(ped);
+            GameFiber.Wait(3000);
+
+            // 5. Collapse and die
+            ped.Kill();
         }
         catch (Exception e)
         {
             Error(e);
         }
     }
+
+
 
     internal static void ApplyTorsoEuphoria(Ped ped)
     {
@@ -190,9 +198,9 @@ internal class EuphoriaHelper
             var shot = new EuphoriaMessageShot(true)
             {
                 ReachForWound = true,
-                BodyStiffness = 0.2f,
-                ArmStiffness = 0.15f,
-                NeckStiffness = 0.1f,
+                BodyStiffness = GetRandomFloat(0.1f, 0.4f),
+                ArmStiffness = GetRandomFloat(0.1f, 0.4f),
+                NeckStiffness = GetRandomFloat(0.1f, 0.4f),
             };
 
             shot.SendTo(ped);
@@ -208,25 +216,16 @@ internal class EuphoriaHelper
     {
         try
         {
-            var shot = new EuphoriaMessageShot(true)
+            EuphoriaMessageCatchFall catchFall = new(true)
             {
-                ReachForWound = true,
-                BodyStiffness = 0.0f,
-                ArmStiffness = 0.0f,
-                NeckStiffness = 0.0f,
+                ArmsStiffness = GetRandomFloat(0.1f, 1f),
+                ForwardMaxArmOffset = GetRandomFloat(0f, 0.3f),
+                BackwardsMinArmOffset = GetRandomFloat(-3f, 0f),
+                ExtraSit = GetRandomFloat(0f, 1f),
+                LegsStiffness = GetRandomFloat(0.6f, 2f),
             };
 
-            shot.SendTo(ped);
-
-            // Optional: add a stumble message to make it more dramatic
-            var stumble = new EuphoriaMessageBodyBalance(startNow: true)
-            {
-                SpineStiffness = 0.1f,
-                UseHeadLook = false,
-                MinBraceTime = 300, // how long before they collapse fully
-            };
-
-            stumble.SendTo(ped);
+            catchFall.SendTo(ped);
         }
         catch (Exception ex)
         {
@@ -234,18 +233,19 @@ internal class EuphoriaHelper
         }
     }
 
-    internal static void ApplyArmEuphoria(Ped ped)
+    internal static void ApplyArmEuphoria(Ped ped, PedDamageInfo damageInfo)
     {
         try
         {
-            MakePedDropWeapon(ped);
+            if (damageInfo.BoneInfo.Limb == Limb.RightArm)
+            {
+                MakePedDropWeapon(ped);
+            }
 
             var shot = new EuphoriaMessageShot(true)
             {
                 ReachForWound = true,
-                BodyStiffness = 0.0f,
                 ArmStiffness = 2.0f,
-                NeckStiffness = 0.0f,
             };
 
             shot.SendTo(ped);
@@ -256,4 +256,3 @@ internal class EuphoriaHelper
         }
     }
 }
-// TODO OBSOLETE?
