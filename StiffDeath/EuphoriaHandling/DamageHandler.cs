@@ -45,7 +45,6 @@ internal class DamageHandler
             switch (damageInfo.BoneInfo.BoneId)
             {
                 case (BoneId)PedBoneId.Head:
-                    //victimPed.Resurrect();
                     victimPed.Health = 100;
                     GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed));
                     break;
@@ -53,7 +52,7 @@ internal class DamageHandler
                     GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Pelvis:
-                    GameFiber.StartNew(() => ApplyPelvisEuphoria(victimPed));
+                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
                     break;
                 default:
                     Game.LogTrivial("Ped was not shot in a specific bone, checking body regions...");
@@ -120,7 +119,7 @@ internal class DamageHandler
                     GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
                     break;
                 case (BoneId)PedBoneId.Pelvis:
-                    GameFiber.StartNew(() => ApplyPelvisEuphoria(victimPed));
+                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
                     break;
                 default:
                     Game.LogTrivial("Ped was not shot in a specific bone, checking body regions...");

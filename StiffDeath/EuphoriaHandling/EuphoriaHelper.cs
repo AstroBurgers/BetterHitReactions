@@ -183,36 +183,6 @@ internal class EuphoriaHelper
         }
     }
 
-
-    internal static void ApplyPelvisEuphoria(Ped ped)
-    {
-        try
-        {
-
-            /*SendEuphoriaMessage(ped, bodyStiffness:16f, fallingReaction:1);
-            GameFiber.Wait(250);
-
-            SendEuphoriaMessage(ped, bodyStiffness:15f);
-            GameFiber.Wait(250);
-
-            SendEuphoriaMessage(ped, bodyStiffness:14f);
-            GameFiber.Wait(250);
-
-            SendEuphoriaMessage(ped, bodyStiffness:10f);
-            GameFiber.Wait(250);
-
-            SendEuphoriaMessage(ped, bodyStiffness:8f);
-            GameFiber.Wait(250);
-            
-            SendEuphoriaMessage(ped, bodyStiffness:2f);*/
-        }
-        catch (Exception e)
-        {
-            Error(e);
-        }
-
-    }
-
     internal static void ApplyTorsoEuphoria(Ped ped)
     {
         try
