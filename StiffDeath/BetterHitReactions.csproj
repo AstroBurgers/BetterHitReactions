@@ -62,7 +62,6 @@
     <Compile Include="GlobalUsings.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Stabbed.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

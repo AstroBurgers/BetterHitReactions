@@ -26,60 +26,13 @@ internal class EuphoriaHelper
     {
         try
         {
-            // Make the ped drop their weapon when stunned
-            MakePedDropWeapon(ped);
-
-            // Create the electrocute euphoria message
-            EuphoriaMessageElectrocute euphoriaMessageElectrocute = new(true)
-            {
-                LeftArm = false,
-                RightArm = false,
-                LeftLeg = false,
-                RightLeg = false,
-                Spine = false,
-                Neck = false,
-                ApplyStiffness = true,
-                StunMag = 1.0f // Adjust the stun magnitude based on desired effect strength
-            };
-            
-            // Get the velocity and apply force based on that
-            var velocity = ped.Velocity;
-            var force = velocity * 10f;
-
-            // Create the windmill animation
-            EuphoriaMessageArmsWindmill windmill = new(true);
-
-            // Send initial euphoria effects
-            windmill.SendTo(ped);
-            euphoriaMessageElectrocute.SendTo(ped);
-
-            // Optionally, adjust force over time to simulate ongoing stun effect
-            for (int i = 0; i < 4; i++) // Applying weaker force after initial bursts
-            {
-                var reducedForce = force * 0.75f; // Reduce force over time
-                ped.ApplyForce(reducedForce, velocity, false, true);
-                windmill.SendTo(ped);
-                euphoriaMessageElectrocute.SendTo(ped);
-                GameFiber.Wait(500); // Longer wait between weaker bursts
-            }
-        }
-        catch (Exception e)
-        {
-            // Log any errors
-            Error(e);
-        }
-    }
-
-    // Specific Bone IDs
-    internal static void ApplyHeadshotEuphoria(Ped ped)
-    {
-        try
-        {
             // First, check if the headshot damage has killed the ped
             //if (ped.IsDead) return; // If the ped is already dead, stop processing
 
+            var stop = new EuphoriaMessageStopAllBehaviours(startNow: true);
+            stop.SendTo(ped);
             // Apply instant stiffness when the headshot occurs
-            var stiffness = GetRandomFloat(0.7f, 1.0f);
+            var stiffness = 1f;
             EuphoriaMessageElectrocute euphoriaMessageElectrocute = new(true)
             {
                 LeftArm = false,
@@ -119,6 +72,65 @@ internal class EuphoriaHelper
                 GameFiber.Wait(250); // Adjust the wait time as necessary to control the slump speed
 
                 // Check if the ped is dead after each iteration
+            }
+            euphoriaMessageElectrocute.StunMag = 0;
+            euphoriaMessageElectrocute.SendTo(ped);
+        }
+        catch (Exception e)
+        {
+            // Log any errors
+            Error(e);
+        }
+    }
+
+    // Specific Bone IDs
+    internal static void ApplyHeadshotEuphoria(Ped ped)
+    {
+        try
+        {
+            // First, check if the headshot damage has killed the ped
+            //if (ped.IsDead) return; // If the ped is already dead, stop processing
+
+            // Apply instant stiffness when the headshot occurs
+            EuphoriaMessageElectrocute euphoriaMessageElectrocute = new(true)
+            {
+                LeftArm = false,
+                RightArm = false,
+                LeftLeg = false,
+                RightLeg = false,
+                Spine = false,
+                Neck = false,
+                ApplyStiffness = true,
+                StunMag = 1.0f // Maximum stiffness for the initial effect
+            };
+
+            // Apply stiffness immediately
+            euphoriaMessageElectrocute.SendTo(ped);
+
+            // Stiffening time - keep the ped in a stiffened state for a brief moment
+            GameFiber.Wait(500); // 0.5 seconds for the stiffening effect to kick in
+
+            // Gradually reduce stiffness and start the slumping effect
+            float stiffnessReduction = 1.0f; // Start with max stiffness
+            for (int i = 0; i < 10; i++) // Loop to gradually reduce stiffness
+            {
+                stiffnessReduction -= 0.1f; // Reduce stiffness by 10% each iteration
+                if (stiffnessReduction <= 0)
+                    stiffnessReduction = 0;
+
+                // Apply gradual stiffness reduction
+                euphoriaMessageElectrocute.StunMag = stiffnessReduction;
+                euphoriaMessageElectrocute.SendTo(ped);
+
+                // Apply a small force to simulate the ped losing control and slumping
+                var velocity = ped.Velocity;
+                var force = velocity * 5f; // Apply less force to simulate a slow slump
+                ped.ApplyForce(force, velocity, false, true);
+
+                // Wait a little before applying the next stiffness reduction
+                GameFiber.Wait(500); // Adjust the wait time as necessary to control the slump speed
+
+                // Check if the ped is dead after each iteration
                 if (ped.IsDead) break; // Stop if the ped has died during the reaction
             }
 
@@ -140,6 +152,7 @@ internal class EuphoriaHelper
                 // Trigger the ragdoll effect for the dead ped
                 ped.IsRagdoll = true; // Make the ped ragdoll, allowing it to fall to the ground
             }
+            ped.Kill();
         }
         catch (Exception e)
         {

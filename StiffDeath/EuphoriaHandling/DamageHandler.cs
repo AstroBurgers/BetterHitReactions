@@ -93,7 +93,8 @@ internal class DamageHandler
                              $"\n~w~Health: ~g~{victimPed.Health}/{victimPed.MaxHealth} Armor: ~b~{victimPed.Armor})" +
                              $"\n~w~Attacker: ~r~{attackerPed?.Model.Name ?? "None"}" +
                              $"\n~w~Weapon: ~y~{damageInfo.WeaponInfo.Hash.ToString()} {damageInfo.WeaponInfo.Type.ToString()} {damageInfo.WeaponInfo.Group.ToString()}" +
-                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");*/
+                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");
+                             */
 
             NativeFunction.Natives.SET_PED_CONFIG_FLAG(victimPed, 281, true);
 
@@ -140,9 +141,6 @@ internal class DamageHandler
                 case (BoneId)PedBoneId.Pelvis:
                     GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
                     break;
-                default:
-                    Game.LogTrivial("Ped was not shot in a specific bone, checking body regions...");
-                    break;
             }
 
             switch (damageInfo.BoneInfo.BodyRegion)
@@ -155,9 +153,6 @@ internal class DamageHandler
                     break;
                 case BodyRegion.Arms:
                     GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, damageInfo));
-                    break;
-                default:
-                    Game.LogTrivial("Ped was not injured in a valid bodyregion");
                     break;
             }
         }
