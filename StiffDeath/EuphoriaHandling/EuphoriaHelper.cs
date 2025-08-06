@@ -120,6 +120,8 @@ internal static class EuphoriaHelper
             var stiffnessReduction = 1.0f; // Start with max stiffness
             for (var i = 0; i < 10; i++) // Loop to gradually reduce stiffness
             {
+                if (!ped.Exists() || ped.IsDead)
+                    break;
                 stiffnessReduction -= 0.1f; // Reduce stiffness by 10% each iteration
                 if (stiffnessReduction <= 0)
                     stiffnessReduction = 0;
@@ -151,13 +153,7 @@ internal static class EuphoriaHelper
                 ped.ApplyForce(collapseForce, Vector3.Zero, false, true);
                 if (IsValidPed(ped)) ped.Kill();
             }
-
-            // Check if the ped is dead after the collapse force and then ragdoll them if they are
-            if (ped.IsDead)
-            {
-                // Trigger the ragdoll effect for the dead ped
-                ped.IsRagdoll = true; // Make the ped ragdoll, allowing it to fall to the ground
-            }
+            
             if (IsValidPed(ped)) ped.Kill();
         }
         catch (Exception e)
