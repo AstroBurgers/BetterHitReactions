@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// configureShotInjuredLeg:  This single message allows you to configure the injured leg reaction during shot

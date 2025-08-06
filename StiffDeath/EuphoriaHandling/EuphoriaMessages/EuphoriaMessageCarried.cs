@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// Carried

@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// setMuscleStiffness:  Use this message to manually set the muscle stiffness values -before using Active Pose to drive to an animated pose, for example.

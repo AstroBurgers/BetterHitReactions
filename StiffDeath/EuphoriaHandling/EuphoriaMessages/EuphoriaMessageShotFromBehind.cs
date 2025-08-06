@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// shotFromBehind:  configure the shot from behind reaction

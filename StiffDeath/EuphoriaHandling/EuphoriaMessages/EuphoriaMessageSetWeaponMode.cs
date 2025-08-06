@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// setWeaponMode:  Use this message to set the character's weapon mode.  This is an alternativeto the setWeaponMode public function.

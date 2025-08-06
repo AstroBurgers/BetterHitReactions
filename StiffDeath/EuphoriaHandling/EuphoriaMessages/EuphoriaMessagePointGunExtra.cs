@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// pointGunExtra:  Seldom set parameters for pointGun - just to keep number of parameters in any message less than or equal to 64

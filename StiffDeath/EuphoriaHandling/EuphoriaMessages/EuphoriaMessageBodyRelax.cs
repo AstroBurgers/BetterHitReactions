@@ -1,6 +1,4 @@
-using Rage.Euphoria;
-
-namespace BetterHitReactions.EuphoriaMessages
+namespace BetterHitReactions.EuphoriaHandling.EuphoriaMessages
 {
 /// <summary>
 /// bodyRelax:  Set the amount of relaxation across the whole body; Used to collapse the character into a rag-doll-like state.

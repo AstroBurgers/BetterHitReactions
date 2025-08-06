@@ -1,6 +1,7 @@
-﻿using BetterHitReactions.EuphoriaMessages;
+﻿using BetterHitReactions.EuphoriaHandling.EuphoriaMessages;
 using static BetterHitReactions.EntryPoint;
 using static BetterHitReactions.RandomHelper;
+using EuphoriaMessageShot = BetterHitReactions.EuphoriaHandling.EuphoriaMessages.EuphoriaMessageShot;
 
 namespace BetterHitReactions.EuphoriaHandling;
 
