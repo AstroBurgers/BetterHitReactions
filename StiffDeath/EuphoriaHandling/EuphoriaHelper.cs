@@ -1,9 +1,10 @@
-﻿using static BetterHitReactions.EntryPoint;
+﻿using BetterHitReactions.EuphoriaMessages;
+using static BetterHitReactions.EntryPoint;
 using static BetterHitReactions.RandomHelper;
 
 namespace BetterHitReactions.EuphoriaHandling;
 
-internal class EuphoriaHelper
+internal static class EuphoriaHelper
 {
     private static void MakePedDropWeapon(Ped ped)
     {
@@ -13,10 +14,12 @@ internal class EuphoriaHelper
         Game.LogTrivial("Making ped drop weapon...");
         NativeFunction.Natives.x6B7513D9966FBEC0(ped); // SET_PED_DROPS_WEAPON
     }
-    internal static Random rndm = new Random();
-    
+
+    internal static bool IsValidPed(Ped ped) =>
+        ped != null && ped.Exists();
+
     internal static void MakePedRagdoll(Ped ped, int minTime, int maxTime, int ragdollType) {
-        Vector3 dir = new Vector3(ped.Velocity.X,
+        var dir = new Vector3(ped.Velocity.X,
             ped.Velocity.Y + (ped.Speed + 1.5f), ped.Velocity.Z);
         NativeFunction.Natives.SET_PED_TO_RAGDOLL_WITH_FALL(ped, minTime, maxTime, 0, dir,
             World.GetGroundZ(ped.Position, true, false), Vector3.Zero, Vector3.Zero);
@@ -53,8 +56,10 @@ internal class EuphoriaHelper
 
             // Gradually reduce stiffness and start the slumping effect
             var stiffnessReduction = stiffness; // Start with max stiffness
-            for (int i = 0; i < 10; i++) // Loop to gradually reduce stiffness
+            for (var i = 0; i < 10; i++) // Loop to gradually reduce stiffness
             {
+                if (!IsValidPed(ped))
+                    break;
                 stiffnessReduction -= 0.1f; // Reduce stiffness by 10% each iteration
                 if (stiffnessReduction <= 0)
                     stiffnessReduction = 0;
@@ -111,8 +116,8 @@ internal class EuphoriaHelper
             GameFiber.Wait(500); // 0.5 seconds for the stiffening effect to kick in
 
             // Gradually reduce stiffness and start the slumping effect
-            float stiffnessReduction = 1.0f; // Start with max stiffness
-            for (int i = 0; i < 10; i++) // Loop to gradually reduce stiffness
+            var stiffnessReduction = 1.0f; // Start with max stiffness
+            for (var i = 0; i < 10; i++) // Loop to gradually reduce stiffness
             {
                 stiffnessReduction -= 0.1f; // Reduce stiffness by 10% each iteration
                 if (stiffnessReduction <= 0)
@@ -143,7 +148,7 @@ internal class EuphoriaHelper
                 // Apply force to make the ped collapse or fall
                 var collapseForce = new Vector3(0, 0, -5f); // Apply downward force to simulate collapse
                 ped.ApplyForce(collapseForce, Vector3.Zero, false, true);
-                ped.Kill();
+                if (IsValidPed(ped)) ped.Kill();
             }
 
             // Check if the ped is dead after the collapse force and then ragdoll them if they are
@@ -152,7 +157,7 @@ internal class EuphoriaHelper
                 // Trigger the ragdoll effect for the dead ped
                 ped.IsRagdoll = true; // Make the ped ragdoll, allowing it to fall to the ground
             }
-            ped.Kill();
+            if (IsValidPed(ped)) ped.Kill();
         }
         catch (Exception e)
         {
@@ -194,7 +199,7 @@ internal class EuphoriaHelper
             GameFiber.Wait(3000);
 
             // 5. Collapse and die
-            ped.Kill();
+            if (IsValidPed(ped)) ped.Kill();
         }
         catch (Exception e)
         {

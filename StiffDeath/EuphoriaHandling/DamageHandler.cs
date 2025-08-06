@@ -2,60 +2,117 @@
 
 namespace BetterHitReactions.EuphoriaHandling;
 
-internal class DamageHandler
+internal static class DamageHandler
 {
-    internal static Random rndm = new Random(DateTime.Now.Millisecond);
+    internal static readonly Random rndm = new(DateTime.Now.Millisecond);
+
+    private static void DampenPedVelocity(Ped ped, DamageType type)
+    {
+        if (!IsValidPed(ped) || ped.IsRunning)
+            return;
+
+        var multiplier = type switch
+        {
+            DamageType.Unarmed => 0.01f,
+            DamageType.MeleeBlunt => 0.03f,
+            DamageType.MeleeStab => 0.05f,
+            
+            DamageType.Pistol => 0.07f,
+            
+            DamageType.SMG => 0.08f,
+            
+            DamageType.Rifle => 0.15f,
+            
+            DamageType.MG => 0.2f,
+            
+            DamageType.Shotgun => 0.4f,
+
+            DamageType.Sniper => 0.6f,
+
+            DamageType.Explosive => 1.0f,
+
+            DamageType.Launcher => 1.0f,
+
+            DamageType.LessThanLethal => 0.02f,
+
+            DamageType.Fire => 0.01f,
+            DamageType.Gas => 0.01f,
+            DamageType.Fall => 0.01f,
+            DamageType.Drowning => 0.01f,
+            DamageType.Bodily => 0.01f,
+            DamageType.BarbedWire => 0.01f,
+            DamageType.Electric => 0.01f,
+            
+            DamageType.VehicleFirearm => 0.25f,
+            DamageType.VehicleLauncher => 1.0f,
+            
+            _ => 0.05f
+        };
+
+        ped.Velocity *= multiplier;
+    }
+
     internal static void InitializeEuphoria()
     {
         Game.LogTrivial("Initialized euphoria...");
         DamageTrackerService.OnPedTookDamage += OnPedTookDamage;
-        
-         if (!Settings.DoesEuphoriaEffectPlayer) return;
-         Game.LogTrivial("Initializing player euphoria");
-         DamageTrackerService.OnPlayerTookDamage += OnPlayerTookDamage;
+
+        if (!Settings.DoesEuphoriaEffectPlayer) return;
+        Game.LogTrivial("Initializing player euphoria");
+        DamageTrackerService.OnPlayerTookDamage += OnPlayerTookDamage;
     }
 
-    
     private static void OnPlayerTookDamage(Ped victimPed, Ped attackerPed, PedDamageInfo damageInfo)
     {
         try
         {
-            /*Game.DisplayHelp($"~w~Ped: {victimPed.Model.Name} (~r~{damageInfo.Damage} ~b~{damageInfo.ArmourDamage} ~w~Dmg ({(victimPed.IsAlive ? "~g~Alive" : "~r~Dead")}~w~) " +
-                             $"\n~w~Health: ~g~{victimPed.Health}/{victimPed.MaxHealth} Armor: ~b~{victimPed.Armor})" +
-                             $"\n~w~Attacker: ~r~{attackerPed?.Model.Name ?? "None"}" +
-                             $"\n~w~Weapon: ~y~{damageInfo.WeaponInfo.Hash.ToString()} {damageInfo.WeaponInfo.Type.ToString()} {damageInfo.WeaponInfo.Group.ToString()}" +
-                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");*/
-
-
             var chance = rndm.Next(1, 101);
             if (chance < 20 && victimPed.Armor == 0)
             {
                 victimPed.IsRagdoll = true;
                 MakePedRagdoll(victimPed, 4000, 5000, 2);
             }
-            else {
+            else
+            {
                 return;
             }
-            
-            //SendEuphoriaMessage(victimPed, reachForWound:true, timeBeforeReachForWound:0f);
-            
+
             if (damageInfo.WeaponInfo.Group == DamageGroup.LessThanLethal)
             {
-                GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed));
+                GameFiber.StartNew(() =>
+                {
+                    if (!IsValidPed(victimPed)) return;
+                    ApplyTazerEuphoria(victimPed);
+                });
             }
 
             switch (damageInfo.BoneInfo.BoneId)
             {
                 case (BoneId)PedBoneId.Head:
                     victimPed.Health = 100;
-                    GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyHeadshotEuphoria(victimPed);
+                    });
                     break;
+
                 case (BoneId)PedBoneId.Neck:
-                    GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyNeckEuphoria(victimPed);
+                    });
                     break;
+
                 case (BoneId)PedBoneId.Pelvis:
-                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyTorsoEuphoria(victimPed);
+                    });
                     break;
+
                 default:
                     Game.LogTrivial("Ped was not shot in a specific bone, checking body regions...");
                     break;
@@ -64,20 +121,36 @@ internal class DamageHandler
             switch (damageInfo.BoneInfo.BodyRegion)
             {
                 case BodyRegion.Torso:
-                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyTorsoEuphoria(victimPed);
+                    });
                     break;
+
                 case BodyRegion.Legs:
-                    GameFiber.StartNew(() => ApplyLegEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyLegEuphoria(victimPed);
+                    });
                     break;
+
                 case BodyRegion.Arms:
-                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, damageInfo));
-                    break;
-                default:
-                    Game.LogTrivial("Ped was not injured in a valid bodyregion");
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyArmEuphoria(victimPed, damageInfo);
+                    });
                     break;
             }
-            GameFiber.Wait(750);
-            victimPed.IsRagdoll = false;
+
+            GameFiber.StartNew(() =>
+            {
+                GameFiber.Wait(750);
+                if (IsValidPed(victimPed))
+                    victimPed.IsRagdoll = false;
+            });
         }
         catch (Exception e)
         {
@@ -89,70 +162,73 @@ internal class DamageHandler
     {
         try
         {
-            /*Game.DisplayHelp($"~w~Ped: {victimPed.Model.Name} (~r~{damageInfo.Damage} ~b~{damageInfo.ArmourDamage} ~w~Dmg ({(victimPed.IsAlive ? "~g~Alive" : "~r~Dead")}~w~) " +
-                             $"\n~w~Health: ~g~{victimPed.Health}/{victimPed.MaxHealth} Armor: ~b~{victimPed.Armor})" +
-                             $"\n~w~Attacker: ~r~{attackerPed?.Model.Name ?? "None"}" +
-                             $"\n~w~Weapon: ~y~{damageInfo.WeaponInfo.Hash.ToString()} {damageInfo.WeaponInfo.Type.ToString()} {damageInfo.WeaponInfo.Group.ToString()}" +
-                             $"\n~w~Bone: ~r~{damageInfo.BoneInfo.BoneId.ToString()} {damageInfo.BoneInfo.Limb.ToString()} {damageInfo.BoneInfo.BodyRegion.ToString()}");
-                             */
-
             NativeFunction.Natives.SET_PED_CONFIG_FLAG(victimPed, 281, true);
 
-            if (!victimPed.IsRunning)
-            {
-                switch (damageInfo.WeaponInfo.Type)
-                {
-                    case DamageType.SMG:
-                    case DamageType.Pistol:
-                        victimPed.Velocity *= 0.05f;
-                        break;
-                    case DamageType.Rifle:
-                        victimPed.Velocity *= 0.11f;
-                        break;
-                    case DamageType.Sniper:
-                    case DamageType.Shotgun:
-                        victimPed.Velocity *= 0.75f;
-                        break;
-                    case DamageType.MG:
-                        victimPed.Velocity *= 0.15f;
-                        break;
-                }
-            }
+            DampenPedVelocity(victimPed, damageInfo.WeaponInfo.Type);
 
-            //SendEuphoriaMessage(victimPed, reachForWound:true, timeBeforeReachForWound:0f);
-            
             if (damageInfo.WeaponInfo.Group == DamageGroup.LessThanLethal)
             {
-                GameFiber.StartNew(() => ApplyTazerEuphoria(victimPed));
+                GameFiber.StartNew(() =>
+                {
+                    if (!IsValidPed(victimPed)) return;
+                    ApplyTazerEuphoria(victimPed);
+                });
                 return;
             }
 
             switch (damageInfo.BoneInfo.BoneId)
             {
                 case (BoneId)PedBoneId.Head:
-                    //victimPed.Resurrect();
                     victimPed.Health = 100;
-                    GameFiber.StartNew(() => ApplyHeadshotEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyHeadshotEuphoria(victimPed);
+                    });
                     break;
+
                 case (BoneId)PedBoneId.Neck:
                     victimPed.Health = 100;
-                    GameFiber.StartNew(() => ApplyNeckEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyNeckEuphoria(victimPed);
+                    });
                     break;
+
                 case (BoneId)PedBoneId.Pelvis:
-                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyTorsoEuphoria(victimPed);
+                    });
                     break;
             }
 
             switch (damageInfo.BoneInfo.BodyRegion)
             {
                 case BodyRegion.Torso:
-                    GameFiber.StartNew(() => ApplyTorsoEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyTorsoEuphoria(victimPed);
+                    });
                     break;
+
                 case BodyRegion.Legs:
-                    GameFiber.StartNew(() => ApplyLegEuphoria(victimPed));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyLegEuphoria(victimPed);
+                    });
                     break;
+
                 case BodyRegion.Arms:
-                    GameFiber.StartNew(() => ApplyArmEuphoria(victimPed, damageInfo));
+                    GameFiber.StartNew(() =>
+                    {
+                        if (!IsValidPed(victimPed)) return;
+                        ApplyArmEuphoria(victimPed, damageInfo);
+                    });
                     break;
             }
         }

@@ -1,8 +1,7 @@
-﻿using System;
-namespace BetterHitReactions;
+﻿namespace BetterHitReactions;
 internal class RandomHelper
 {
-    internal static readonly Random rndm = new Random(DateTime.Now.Millisecond);
+    internal static readonly Random rndm = new(DateTime.Now.Millisecond);
 
     public static float GetRandomFloat(float min, float max)
     {

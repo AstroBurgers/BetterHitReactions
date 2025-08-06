@@ -29,10 +29,10 @@ public class EntryPoint
     
     internal static long GenerateChance()
     {
-        byte[] randomBytes = new byte[8]; // Using 8 bytes for more randomization ig
+        var randomBytes = new byte[8]; // Using 8 bytes for more randomization ig
         ImprovedRandom.GetBytes(randomBytes);
  
-        long randomNumber = BitConverter.ToInt64(randomBytes, 0) & 0x7FFFFFFFFFFFFFFF; // Convert to positive integer
+        var randomNumber = BitConverter.ToInt64(randomBytes, 0) & 0x7FFFFFFFFFFFFFFF; // Convert to positive integer
 
         var convertedChance = randomNumber % 100;
         
